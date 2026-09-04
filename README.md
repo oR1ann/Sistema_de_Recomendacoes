@@ -27,7 +27,7 @@ Este projeto tem caráter extensionista e está alinhado a:
 | Ryan Rodrigues Pereira | 10742607 | Gestão do repositório GitHub + Análise Exploratória de Dados (EDA) |
 | Nour Hussein Barakat | 10738273 | Desenvolvimento e otimização do modelo de Machine Learning |
 | Guilherme de Araújo Espírito Santo | 10746294 | Documentação e apresentação final (slides/vídeo) |
-| Andre Cavina Oliveira | *a definir* |
+| Andre Cavina Oliveira | *a definir* | Documentação + Análise Exploratória de Dados (EDA) |
 
 
 
@@ -36,7 +36,7 @@ Este projeto tem caráter extensionista e está alinhado a:
 ```
 ├── docs/           # Documento do projeto (Word) e materiais de apoio
 ├── data/           # Base de dados 
-├── notebooks/      # Análise exploratória e experimentos
+├── notebooks/      # Análise exploratória 
 ├── src/            # Código-fonte do modelo de recomendação
 └── README.md
 ```
