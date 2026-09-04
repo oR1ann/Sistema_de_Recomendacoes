@@ -1,6 +1,6 @@
 # Sistema de Recomendação de Cursos e Capacitações Profissionais
 
-Projeto da disciplina **Projeto Aplicado III** — Universidade Presbiteriana Mackenzie, curso de Ciência de Dados e Inteligência Artificial.
+Projeto da disciplina **Projeto Aplicado III** — Universidade Presbiteriana Mackenzie, Banco De Dados.
 
 ##  Sobre o projeto
 
@@ -35,7 +35,7 @@ Este projeto tem caráter extensionista e está alinhado a:
 
 ```
 ├── docs/           # Documento do projeto (Word) e materiais de apoio
-├── data/           # Base de dados (raw e tratada)
+├── data/           # Base de dados 
 ├── notebooks/      # Análise exploratória e experimentos
 ├── src/            # Código-fonte do modelo de recomendação
 └── README.md
