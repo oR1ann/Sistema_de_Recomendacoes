@@ -13,7 +13,7 @@ Este projeto tem caráter extensionista e está alinhado a:
 - **ODS 4 — Educação de Qualidade**
 - **ODS 8 — Trabalho Decente e Crescimento Econômico**
 
-## 🗂 Base de dados
+##  Base de dados
 
 **Coursera Courses Dataset 2021** — Khushee Kapoor (Kaggle)
  https://www.kaggle.com/datasets/khusheekapoor/coursera-courses-dataset-2021
