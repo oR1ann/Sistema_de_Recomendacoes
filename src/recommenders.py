@@ -47,10 +47,12 @@ class ItemKNNRecommender:
     name = "ItemKNN (cosseno)"
 
     def fit(self, ds: Dataset):
+        import warnings
         X = normalize(ds.R.T.tocsr(), norm="l2", axis=1)
-        S = (X @ X.T).tolil()
-        S.setdiag(0.0)
-        S = S.tocsr()
+        S = (X @ X.T).tocsr()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            S.setdiag(0.0)  # zera auto-similaridade sem converter p/ lil (custava GBs de RAM)
         S.eliminate_zeros()
         self.S = _keep_topk_per_row(S, config.ITEMKNN_NEIGHBORS)
         self.R = ds.R
