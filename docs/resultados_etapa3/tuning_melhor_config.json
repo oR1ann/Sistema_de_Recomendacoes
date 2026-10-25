@@ -1,0 +1,15 @@
+{
+  "SVD_FACTORS": 32,
+  "ITEMKNN_NEIGHBORS": 500,
+  "HYBRID_WEIGHTS": {
+    "pop": 0.6,
+    "itemknn": 0.1,
+    "svd": 0.1,
+    "content": 0.2
+  },
+  "HYBRID_NORM": "zscore",
+  "HEALTH_LAMBDA": 0.35,
+  "criterio_lambda": "maior lambda com perda relativa de NDCG@10 <= 10% na validação",
+  "casos_validacao": 16040,
+  "casos_teste": 16039
+}

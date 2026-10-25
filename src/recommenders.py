@@ -46,7 +46,7 @@ class PopularityRecommender:
 class ItemKNNRecommender:
     name = "ItemKNN (cosseno)"
 
-    def fit(self, ds: Dataset):
+    def fit(self, ds: Dataset, neighbors: int = None):
         import warnings
         X = normalize(ds.R.T.tocsr(), norm="l2", axis=1)
         S = (X @ X.T).tocsr()
@@ -54,7 +54,7 @@ class ItemKNNRecommender:
             warnings.simplefilter("ignore")
             S.setdiag(0.0)  # zera auto-similaridade sem converter p/ lil (custava GBs de RAM)
         S.eliminate_zeros()
-        self.S = _keep_topk_per_row(S, config.ITEMKNN_NEIGHBORS)
+        self.S = _keep_topk_per_row(S, neighbors or config.ITEMKNN_NEIGHBORS)
         self.R = ds.R
         return self
 
@@ -67,8 +67,8 @@ class ItemKNNRecommender:
 class SVDRecommender:
     name = "PureSVD (fatoracao)"
 
-    def fit(self, ds: Dataset):
-        k = min(config.SVD_FACTORS, min(ds.R.shape) - 1)
+    def fit(self, ds: Dataset, factors: int = None):
+        k = min(factors or config.SVD_FACTORS, min(ds.R.shape) - 1)
         svd = TruncatedSVD(n_components=k, random_state=config.RANDOM_STATE)
         self.U = svd.fit_transform(ds.R).astype(np.float32)
         self.V = svd.components_.astype(np.float32)
@@ -104,8 +104,9 @@ class HybridRecommender:
     """Fusao ponderada de escores normalizados, com reordenacao nutricional."""
 
     def __init__(self, components: dict, weights: dict = None,
-                 health_lambda: float = None):
+                 health_lambda: float = None, norm: str = None):
         self.components = components
+        self.norm = norm or config.HYBRID_NORM
         self.weights = weights or config.HYBRID_WEIGHTS
         self.health_lambda = (config.HEALTH_LAMBDA if health_lambda is None
                               else health_lambda)
@@ -119,11 +120,19 @@ class HybridRecommender:
     def score(self, u: int, candidates: np.ndarray) -> np.ndarray:
         total = np.zeros(len(candidates), dtype=np.float32)
         for key, model in self.components.items():
-            total += self.weights.get(key, 0.0) * _minmax(model.score(u, candidates))
+            total += self.weights.get(key, 0.0) * _normalize(model.score(u, candidates), self.norm)
         if self.health_lambda > 0:
             health = self.ds.health[candidates]
             total = (1 - self.health_lambda) * _minmax(total) + self.health_lambda * health
         return total
+
+
+def _normalize(x: np.ndarray, kind: str = "minmax") -> np.ndarray:
+    x = np.asarray(x, dtype=np.float32)
+    if kind == "zscore":
+        sd = float(np.std(x))
+        return (x - float(np.mean(x))) / sd if sd > 0 else np.zeros_like(x)
+    return _minmax(x)
 
 
 def _minmax(x: np.ndarray) -> np.ndarray:
@@ -132,13 +141,20 @@ def _minmax(x: np.ndarray) -> np.ndarray:
 
 
 def _keep_topk_per_row(S: sparse.csr_matrix, k: int) -> sparse.csr_matrix:
+    """Mantém apenas os k maiores valores de cada linha (poda de vizinhos)."""
     S = S.tocsr()
-    rows, cols, vals = [], [], []
+    idx_parts, val_parts, new_indptr = [], [], [0]
     for i in range(S.shape[0]):
         start, end = S.indptr[i], S.indptr[i + 1]
         idx, v = S.indices[start:end], S.data[start:end]
         if len(v) > k:
             top = np.argpartition(-v, k)[:k]
             idx, v = idx[top], v[top]
-        rows.extend([i] * len(idx)); cols.extend(idx); vals.extend(v)
-    return sparse.csr_matrix((vals, (rows, cols)), shape=S.shape, dtype=np.float32)
+        idx_parts.append(idx)
+        val_parts.append(v)
+        new_indptr.append(new_indptr[-1] + len(idx))
+    return sparse.csr_matrix(
+        (np.concatenate(val_parts).astype(np.float32),
+         np.concatenate(idx_parts).astype(np.int32),
+         np.asarray(new_indptr, dtype=np.int64)),
+        shape=S.shape, dtype=np.float32)
