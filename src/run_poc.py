@@ -1,4 +1,8 @@
-"""Prova de conceito da Etapa 2: treina e compara os modelos iniciais."""
+"""Pipeline completo: treina e compara os modelos com os parametros de src/config.py.
+
+O config guarda a configuracao AJUSTADA na Etapa 3 (src/tuning.py). A prova de conceito
+com os parametros iniciais da Etapa 2 esta em notebooks/02_poc_modelos.ipynb.
+"""
 import json
 import time
 
@@ -25,10 +29,9 @@ def main():
     knn = ItemKNNRecommender().fit(ds)
     svd = SVDRecommender().fit(ds)
     cnt = ContentTFIDFRecommender().fit(ds)
-    hyb = HybridRecommender({"svd": svd, "itemknn": knn, "content": cnt},
-                            health_lambda=0.0).fit(ds)
-    hyb_h = HybridRecommender({"svd": svd, "itemknn": knn, "content": cnt},
-                              health_lambda=config.HEALTH_LAMBDA).fit(ds)
+    comps = {"pop": pop, "itemknn": knn, "svd": svd, "content": cnt}
+    hyb = HybridRecommender(comps, health_lambda=0.0).fit(ds)
+    hyb_h = HybridRecommender(comps, health_lambda=config.HEALTH_LAMBDA).fit(ds)
 
     print(">> avaliando ...")
     results = [evaluate(m, ds, test) for m in (pop, knn, svd, cnt, hyb, hyb_h)]

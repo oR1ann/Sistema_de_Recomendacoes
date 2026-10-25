@@ -35,8 +35,9 @@ def evaluate(model, ds: Dataset, test: pd.DataFrame, k: int = None,
         if u is None or i is None:
             continue
         cands = _sample_candidates(rng, ds, u, i, n_candidates)
+        cands = rng.permutation(cands)  # posição aleatória: evita favorecer o item relevante em empates
         scores = np.asarray(model.score(u, cands), dtype=np.float64)
-        order = np.argsort(-scores)[:k]
+        order = np.argsort(-scores, kind="stable")[:k]
         topk = cands[order]
 
         hit = int(i in topk)

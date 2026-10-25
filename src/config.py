@@ -24,15 +24,16 @@ TOP_K = 10
 CANDIDATE_SAMPLE = 100             # 1 item positivo + 99 negativos amostrados #
 
 # --- modelos --- #
-SVD_FACTORS = 64
-ITEMKNN_NEIGHBORS = 200
+SVD_FACTORS = 32                   # ajustado na validação (inicial: 64)
+ITEMKNN_NEIGHBORS = 500            # ajustado na validação (inicial: 200)
 TFIDF_MIN_DF = 5
 TFIDF_NGRAM_RANGE = (1, 2)
 TFIDF_MAX_FEATURES = 50000
 
 # --- hibrido e reordenacao nutricional --- #
-HYBRID_WEIGHTS = {"svd": 0.5, "itemknn": 0.3, "content": 0.2}
-HEALTH_LAMBDA = 0.30               # peso do indice nutricional na reordenacao #
+HYBRID_WEIGHTS = {"pop": 0.6, "itemknn": 0.1, "svd": 0.1, "content": 0.2}  # ajustado (inicial: svd 0.5, itemknn 0.3, content 0.2)
+HYBRID_NORM = "zscore"             # normalização dos escores por usuário: minmax | zscore
+HEALTH_LAMBDA = 0.35               # peso do indice nutricional na reordenacao #
 RERANK_POOL = 50                   # tamanho do pool reordenado antes do top-k #
 
 # --- valores diarios de referencia usados pelo Food.com (PDV -> gramas) --- #
