@@ -1,0 +1,19 @@
+protocolo,modelo,HitRate@10,Precision@10,MAP@10,NDCG@10,Cobertura_catalogo,Novidade_bits,Vies_popularidade,IndiceNutricional@10,n_casos
+99 negativos uniformes,Popularidade,0.5072,0.0507,0.2722,0.3277,0.1718,14.0145,0.0681,0.5258,16039.0
+99 negativos uniformes,ItemKNN (500 viz.),0.2014,0.0201,0.0817,0.1094,0.9395,15.7117,0.0223,0.5421,16039.0
+99 negativos uniformes,SVD (32 fatores),0.3799,0.038,0.2103,0.2502,0.6444,15.4489,0.0476,0.5362,16039.0
+99 negativos uniformes,Conteudo (TF-IDF),0.2128,0.0213,0.0786,0.1095,0.7135,15.6412,0.0197,0.5678,16039.0
+99 negativos uniformes,Hibrido (lambda=0),0.5189,0.0519,0.2779,0.3349,0.4816,15.2598,0.0642,0.5336,16039.0
+99 negativos uniformes,Hibrido (lambda=0.35),0.4558,0.0456,0.262,0.3081,0.3395,15.0832,0.0578,0.6773,16039.0
+99 negativos por popularidade,Popularidade,0.1614,0.0161,0.0521,0.0772,0.022,12.2285,0.324,0.5059,16039.0
+99 negativos por popularidade,ItemKNN (500 viz.),0.1734,0.0173,0.0628,0.0883,0.8279,15.6254,0.1526,0.529,16039.0
+99 negativos por popularidade,SVD (32 fatores),0.1733,0.0173,0.0564,0.0833,0.2469,14.8075,0.2569,0.5141,16039.0
+99 negativos por popularidade,Conteudo (TF-IDF),0.1865,0.0186,0.0672,0.0946,0.6046,15.4769,0.0773,0.5578,16039.0
+99 negativos por popularidade,Hibrido (lambda=0),0.1879,0.0188,0.0581,0.0879,0.1198,14.523,0.3145,0.5117,16039.0
+99 negativos por popularidade,Hibrido (lambda=0.35),0.174,0.0174,0.0554,0.0826,0.1473,14.9964,0.2871,0.6212,16039.0
+ranking completo,Popularidade,0.0238,,,0.0116,0.0012,10.4136,0.7663,0.4751,
+ranking completo,ItemKNN (500 viz.),0.0064,,,0.0031,0.5789,15.9825,0.0602,0.546,
+ranking completo,SVD (32 fatores),0.022,,,0.0117,0.0626,13.9973,0.5667,0.495,
+ranking completo,Conteudo (TF-IDF),0.0031,,,0.0015,0.4481,15.5425,0.0227,0.5842,
+ranking completo,Hibrido (lambda=0),0.0247,,,0.0121,0.0012,10.4414,0.7653,0.4808,
+ranking completo,Hibrido (lambda=0.35),0.0252,,,0.0121,0.0011,10.5966,0.7423,0.5426,

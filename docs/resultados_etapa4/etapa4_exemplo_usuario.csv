@@ -1,0 +1,16 @@
+lista,posicao,receita,indice_nutricional,minutos
+Popularidade,1,to die for crock pot roast,0.625,545
+Popularidade,2,crock pot chicken with black beans   cream cheese,0.5,243
+Popularidade,3,creamy cajun chicken pasta,0.5,25
+Popularidade,4,whatever floats your boat  brownies,0.375,35
+Popularidade,5,kittencal s italian melt in your mouth meatballs,0.5,50
+Hibrido (lambda=0),1,to die for crock pot roast,0.625,545
+Hibrido (lambda=0),2,crock pot chicken with black beans   cream cheese,0.5,243
+Hibrido (lambda=0),3,whatever floats your boat  brownies,0.375,35
+Hibrido (lambda=0),4,creamy cajun chicken pasta,0.5,25
+Hibrido (lambda=0),5,kittencal s italian melt in your mouth meatballs,0.5,50
+Hibrido (lambda=0.35),1,to die for crock pot roast,0.625,545
+Hibrido (lambda=0.35),2,crock pot chicken with black beans   cream cheese,0.5,243
+Hibrido (lambda=0.35),3,creamy cajun chicken pasta,0.5,25
+Hibrido (lambda=0.35),4,whatever floats your boat  brownies,0.375,35
+Hibrido (lambda=0.35),5,kittencal s italian melt in your mouth meatballs,0.5,50
