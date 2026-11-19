@@ -1,0 +1,24 @@
+# Visita o site a cada 6 horas para o Streamlit Cloud não colocá-lo para dormir
+# (ele dorme após cerca de 12 horas sem visitas). Também pode ser rodado à mão em Actions.
+name: Manter site ativo
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  visitar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar o navegador
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+      - name: Visitar o site
+        run: python tools/acordar_site.py https://cozinha-consciente.streamlit.app/
