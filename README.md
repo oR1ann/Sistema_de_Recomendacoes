@@ -10,9 +10,23 @@ Grupo: Ryan Rodrigues Pereira, Nour Hussein Barakat, Guilherme de Araújo Espír
 | Item | Onde |
 |---|---|
 | Documento do projeto (versão final, Etapa 4) | [`docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf`](docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf) e [`.docx`](docs/Projeto_Aplicado_III_Cozinha_Consciente.docx) |
+| Protótipo (site público) | _link a inserir após a publicação_ · código em [`app/`](app/) |
 | Vídeo de apresentação (YouTube) | _link a inserir_ |
 | Vídeo da aplicação na comunidade | _link a inserir_ |
 | Resultados da Etapa 4 (tabelas e figuras) | [`docs/resultados_etapa4/`](docs/resultados_etapa4/) |
+
+## Protótipo (site)
+
+A pessoa informa os ingredientes que tem em casa e recebe receitas que aproveitam esses itens, ordenadas com a reordenação nutricional do projeto (λ ajustável, padrão 0,35). Detalhes na seção 4.10 do documento.
+
+```
+pip install -r app/requirements.txt
+streamlit run app/app.py
+```
+
+O catálogo do site (`app/dados/receitas.parquet`, 3,3 MB) é gerado a partir dos dados brutos com `python -m tools.build_app_data`.
+
+Publicação no [Streamlit Community Cloud](https://share.streamlit.io): **Create app** → repositório `oR1ann/Sistema_de_Recomendacoes`, branch `main`, arquivo `app/app.py`.
 
 ## Base de dados
 
@@ -61,7 +75,8 @@ Para validar o pipeline sem os dados reais: `python -m tools.make_synthetic` ger
 | `tools/make_synthetic.py` | amostra sintética para teste de integridade |
 | `tools/make_flowchart.py`, `tools/build_nbs_etapa3.py` | geram o fluxograma e os notebooks da Etapa 3 |
 | `tools/make_figs_etapa4.py` | gera as figuras da Etapa 4 |
-| `app/` | protótipo (Etapa 4) |
+| `app/` | protótipo: site em Streamlit (`app.py`), recomendador por ingredientes (`recomendador.py`), dicionário português→inglês (`ingredientes_pt.py`) e catálogo reduzido (`dados/`) |
+| `tools/build_app_data.py` | gera o catálogo reduzido usado pelo site |
 | `extensao/` | cartilha e registros da ação extensionista (Etapa 4) |
 
 ## Parâmetros (configuração ajustada na validação — Etapa 3)
