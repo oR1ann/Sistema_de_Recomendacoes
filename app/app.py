@@ -216,18 +216,17 @@ with aba_aval:
     with st.form("avaliacao", clear_on_submit=True):
         sentido = st.radio("As receitas sugeridas fizeram sentido com os ingredientes que você informou? "
                            ":gray[(1 = nenhum sentido, 5 = total sentido)]", escala, horizontal=True, index=None)
-        nota = st.radio("Que nota você dá para o site? :gray[(0 = muito ruim, 5 = excelente)]",
-                        ["0", "1", "2", "3", "4", "5"], horizontal=True, index=None)
+        nota = st.radio("Que nota você dá para o site? :gray[(1 = muito ruim, 5 = excelente)]",
+                        escala, horizontal=True, index=None)
         facilidade = st.radio("Foi fácil usar e navegar no site? :gray[(1 = muito difícil, 5 = muito fácil)]",
                               escala, horizontal=True, index=None)
         utilidade = st.radio("As informações das receitas (índice nutricional, o que falta comprar, tempo de "
                              "preparo) foram úteis? :gray[(1 = nada úteis, 5 = muito úteis)]",
                              escala, horizontal=True, index=None)
-        c1, c2 = st.columns(2)
-        usaria = c1.radio("Você usaria o site para decidir o que cozinhar?", ["Sim", "Talvez", "Não"],
-                          horizontal=True, index=None)
-        indicaria = c2.radio("Você indicaria o site para alguém?", ["Sim", "Talvez", "Não"],
-                             horizontal=True, index=None)
+        usaria = st.radio("Você usaria o site para decidir o que cozinhar? "
+                          ":gray[(1 = de jeito nenhum, 5 = com certeza)]", escala, horizontal=True, index=None)
+        indicaria = st.radio("Você indicaria o site para alguém? :gray[(1 = de jeito nenhum, 5 = com certeza)]",
+                             escala, horizontal=True, index=None)
         origem = st.selectbox("Como você conheceu o site?", ["Oficina ou ação na comunidade",
                                                               "Equipe do projeto", "Outro"],
                               index=None, placeholder="Escolha uma opção")
