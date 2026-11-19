@@ -10,7 +10,7 @@ Grupo: Ryan Rodrigues Pereira, Nour Hussein Barakat, Guilherme de Araújo Espír
 | Item | Onde |
 |---|---|
 | Documento do projeto (versão final, Etapa 4) | [`docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf`](docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf) e [`.docx`](docs/Projeto_Aplicado_III_Cozinha_Consciente.docx) |
-| Protótipo (site público) | _link a inserir após a publicação_ · código em [`app/`](app/) |
+| Protótipo (site público) | https://cozinha-consciente.streamlit.app · código em [`app/`](app/) |
 | Vídeo de apresentação (YouTube) | _link a inserir_ |
 | Vídeo da aplicação na comunidade | _link a inserir_ |
 | Resultados da Etapa 4 (tabelas e figuras) | [`docs/resultados_etapa4/`](docs/resultados_etapa4/) |
