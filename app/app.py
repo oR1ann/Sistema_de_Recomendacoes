@@ -7,6 +7,7 @@ import re
 
 import streamlit as st
 
+import feedback as FB
 import recomendador as R
 from estilo import CSS, icone
 from ingredientes_pt import INGREDIENTES
@@ -71,6 +72,24 @@ def cartao(pos, idx, r, itens, basicos):
     )
 
 
+def avaliacao_rapida(consulta):
+    """Estrelas logo abaixo dos resultados; envia uma vez por busca."""
+    if not FB.configurado():
+        return
+    with st.container(border=True):
+        st.markdown("**Essas sugestões fizeram sentido para você?**")
+        estrelas = st.feedback("stars", key=f"rapida::{consulta}")
+        enviado = st.session_state.setdefault("rapidas_enviadas", {})
+        if estrelas is not None and consulta not in enviado:
+            enviado[consulta] = FB.enviar({"tipo": "avaliação rápida", "ingredientes": consulta,
+                                           "sentido": estrelas + 1})
+        if consulta in enviado:
+            if enviado[consulta]:
+                st.caption("Obrigado! Para contar mais, use a aba Avaliar.")
+            else:
+                st.caption("Não foi possível registrar agora. Tente pela aba Avaliar.")
+
+
 cat = catalogo()
 
 st.html(
@@ -80,9 +99,10 @@ st.html(
     'e favorecer escolhas mais equilibradas.</p></div>'
 )
 
-aba_busca, aba_como, aba_sobre = st.tabs([":material/search: Receitas",
-                                          ":material/info: Como funciona",
-                                          ":material/groups: Sobre"])
+aba_busca, aba_como, aba_aval, aba_sobre = st.tabs([":material/search: Receitas",
+                                                    ":material/info: Como funciona",
+                                                    ":material/rate_review: Avaliar",
+                                                    ":material/groups: Sobre"])
 
 # ------------------------------------------------------------------------ busca
 with aba_busca:
@@ -131,6 +151,7 @@ with aba_busca:
                     '<span class="cc-chip cc-basico">básico de despensa</span>'
                     '<span class="cc-chip cc-falta">falta comprar</span></div>')
             st.html("".join(cartao(p, idx, r, itens, basicos) for p, (idx, r) in enumerate(res.iterrows(), 1)))
+            avaliacao_rapida(", ".join(itens))
 
 # ------------------------------------------------------------------------ como funciona
 with aba_como:
@@ -186,6 +207,43 @@ with aba_como:
             'nutricional. Ele não substitui a orientação de um profissional de saúde nem o Guia Alimentar para '
             'a População Brasileira. As receitas vêm da base pública Food.com, em inglês, e o link de cada uma '
             'leva ao modo de preparo original.</div>')
+
+# ------------------------------------------------------------------------ avaliar
+with aba_aval:
+    st.markdown("### Conte o que achou")
+    st.markdown("Leva menos de um minuto. As respostas são anônimas e ajudam a equipe a avaliar o projeto.")
+    escala = ["1", "2", "3", "4", "5"]
+    with st.form("avaliacao", clear_on_submit=True):
+        sentido = st.radio("As receitas sugeridas fizeram sentido com os ingredientes que você informou? "
+                           ":gray[(1 = nenhum sentido, 5 = total sentido)]", escala, horizontal=True, index=None)
+        nota = st.radio("Que nota você dá para o site? :gray[(0 = muito ruim, 5 = excelente)]",
+                        ["0", "1", "2", "3", "4", "5"], horizontal=True, index=None)
+        facilidade = st.radio("Foi fácil usar e navegar no site? :gray[(1 = muito difícil, 5 = muito fácil)]",
+                              escala, horizontal=True, index=None)
+        utilidade = st.radio("As informações das receitas (índice nutricional, o que falta comprar, tempo de "
+                             "preparo) foram úteis? :gray[(1 = nada úteis, 5 = muito úteis)]",
+                             escala, horizontal=True, index=None)
+        c1, c2 = st.columns(2)
+        usaria = c1.radio("Você usaria o site para decidir o que cozinhar?", ["Sim", "Talvez", "Não"],
+                          horizontal=True, index=None)
+        indicaria = c2.radio("Você indicaria o site para alguém?", ["Sim", "Talvez", "Não"],
+                             horizontal=True, index=None)
+        origem = st.selectbox("Como você conheceu o site?", ["Oficina ou ação na comunidade",
+                                                              "Equipe do projeto", "Outro"],
+                              index=None, placeholder="Escolha uma opção")
+        comentario = st.text_area("Comentários ou sugestões (opcional)",
+                                  placeholder="O que você mudaria? Faltou alguma receita ou ingrediente?")
+        enviar = st.form_submit_button("Enviar avaliação", icon=":material/send:")
+    if enviar:
+        respostas = {"tipo": "formulário completo", "sentido": sentido, "nota": nota,
+                     "facilidade": facilidade, "utilidade": utilidade, "usaria": usaria,
+                     "indicaria": indicaria, "origem": origem, "comentario": comentario.strip()}
+        if all(v in (None, "") for k, v in respostas.items() if k != "tipo"):
+            st.warning("Responda pelo menos uma pergunta antes de enviar.")
+        elif FB.enviar(respostas):
+            st.success("Obrigado! Sua avaliação foi registrada.")
+        else:
+            st.error("Não foi possível registrar a avaliação agora. Tente novamente em alguns minutos.")
 
 # ------------------------------------------------------------------------ sobre
 with aba_sobre:
