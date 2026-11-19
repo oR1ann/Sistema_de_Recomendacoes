@@ -1,0 +1,13 @@
+protocolo,comparacao,metrica,diferenca_media,ic95_inf,ic95_sup,wilcoxon_p
+99 negativos uniformes,Hibrido (lambda=0) - Popularidade,NDCG@10,0.0072,0.0055,0.009,2.4260361386673226e-16
+99 negativos uniformes,Hibrido (lambda=0.35) - Popularidade,NDCG@10,-0.0196,-0.022,-0.0173,8.172086345870855e-57
+99 negativos uniformes,Hibrido (lambda=0) - SVD (32 fatores),NDCG@10,0.0846,0.0807,0.0886,0.0
+99 negativos uniformes,Hibrido (lambda=0.35) - Hibrido (lambda=0),NDCG@10,-0.0268,-0.0289,-0.0248,1.0727706010432512e-134
+99 negativos por popularidade,Hibrido (lambda=0) - Popularidade,NDCG@10,0.0107,0.0094,0.0119,3.2425450673482454e-55
+99 negativos por popularidade,Hibrido (lambda=0.35) - Popularidade,NDCG@10,0.0054,0.0037,0.0071,5.860678342973212e-10
+99 negativos por popularidade,Hibrido (lambda=0) - SVD (32 fatores),NDCG@10,0.0046,0.0025,0.0067,0.00043124470913265473
+99 negativos por popularidade,Hibrido (lambda=0.35) - Hibrido (lambda=0),NDCG@10,-0.0053,-0.0067,-0.0038,2.9722923185223297e-13
+ranking completo,Hibrido (lambda=0) - Popularidade,NDCG@10,0.0005,0.0002,0.0008,0.0008659151474392506
+ranking completo,Hibrido (lambda=0.35) - Popularidade,NDCG@10,0.0005,0.0001,0.001,0.017081068058319646
+ranking completo,Hibrido (lambda=0) - SVD (32 fatores),NDCG@10,0.0004,-0.0005,0.0014,0.5162803323839396
+ranking completo,Hibrido (lambda=0.35) - Hibrido (lambda=0),NDCG@10,0.0,-0.0004,0.0004,0.9194882431922773

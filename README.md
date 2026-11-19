@@ -5,6 +5,15 @@ Sistema de recomendação híbrido de receitas que combina filtragem colaborativ
 Universidade Presbiteriana Mackenzie — Tecnologia em Banco de Dados
 Grupo: Ryan Rodrigues Pereira, Nour Hussein Barakat, Guilherme de Araújo Espírito Santo, André Cavina Oliveira
 
+## Entregas
+
+| Item | Onde |
+|---|---|
+| Documento do projeto (versão final, Etapa 4) | [`docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf`](docs/Projeto_Aplicado_III_Cozinha_Consciente.pdf) e [`.docx`](docs/Projeto_Aplicado_III_Cozinha_Consciente.docx) |
+| Vídeo de apresentação (YouTube) | _link a inserir_ |
+| Vídeo da aplicação na comunidade | _link a inserir_ |
+| Resultados da Etapa 4 (tabelas e figuras) | [`docs/resultados_etapa4/`](docs/resultados_etapa4/) |
+
 ## Base de dados
 
 `Food.com Recipes and Interactions` (Kaggle): https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions
@@ -14,16 +23,19 @@ Baixe `RAW_recipes.csv` e `RAW_interactions.csv` e coloque em `data/raw/`.
 ## Como reproduzir
 
 ```
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-python -m src.eda            # análise exploratória (Etapa 2)
-python -m src.run_poc        # treino e avaliação com os parâmetros de src/config.py (configuração ajustada)
-python -m src.tuning         # ajuste na validação e reavaliação no teste (Etapa 3, ~3 min)
+python -m src.eda                # análise exploratória (Etapa 2)
+python -m src.run_poc            # treino e avaliação com os parâmetros de src/config.py (configuração ajustada)
+python -m src.tuning             # ajuste na validação e reavaliação no teste (Etapa 3, ~4 min)
+python -m src.etapa4             # resultados finais: 3 protocolos, testes estatísticos, faixas de usuário (Etapa 4)
+python -m tools.make_figs_etapa4 # figuras da seção 4 do documento (lê docs/resultados_etapa4/)
 ```
 
-Saídas em `data/processed/`: `eda_resumo.json`, `figuras/`, `poc_stats.json`, `poc_metrics.csv` e as tabelas `tuning_*.csv`.
-As tabelas e figuras da Etapa 3 usadas no documento estão versionadas em `docs/resultados_etapa3/`.
+Saídas em `data/processed/`: `eda_resumo.json`, `figuras/`, `poc_stats.json`, `poc_metrics.csv`, as tabelas `tuning_*.csv` e `etapa4_*.csv`.
+As tabelas e figuras usadas no documento estão versionadas em `docs/resultados_etapa3/` e `docs/resultados_etapa4/`.
 
 Para validar o pipeline sem os dados reais: `python -m tools.make_synthetic` gera uma amostra com o mesmo esquema. **Os números produzidos a partir dela não são resultados experimentais.**
 
@@ -39,12 +51,16 @@ Para validar o pipeline sem os dados reais: `python -m tools.make_synthetic` ger
 | `src/tuning.py` | ajuste de hiperparâmetros na validação e reavaliação no teste (Etapa 3) |
 | `src/eda.py` | análise exploratória e figuras |
 | `src/run_poc.py` | treino e avaliação de ponta a ponta com `src/config.py` |
+| `src/etapa4.py` | resultados finais: robustez ao protocolo, testes estatísticos, faixas de atividade e exemplo de lista (Etapa 4) |
 | `notebooks/02_poc_modelos.ipynb` | prova de conceito com os parâmetros iniciais (Etapa 2, protocolo corrigido) |
 | `notebooks/03_ajuste_e_reavaliacao.ipynb` | análise dos resultados preliminares, ajuste e reavaliação (Etapa 3) |
 | `docs/resultados_etapa3/` | tabelas, configuração final e figuras da Etapa 3 |
+| `docs/resultados_etapa4/` | tabelas e figuras da seção 4 (Resultados) |
+| `docs/Projeto_Aplicado_III_Cozinha_Consciente.*` | documento final do projeto (PDF e DOCX) |
 | `docs/fluxograma_metodologia.png` | Figura 1 do documento (visão geral da metodologia) |
 | `tools/make_synthetic.py` | amostra sintética para teste de integridade |
 | `tools/make_flowchart.py`, `tools/build_nbs_etapa3.py` | geram o fluxograma e os notebooks da Etapa 3 |
+| `tools/make_figs_etapa4.py` | gera as figuras da Etapa 4 |
 | `app/` | protótipo (Etapa 4) |
 | `extensao/` | cartilha e registros da ação extensionista (Etapa 4) |
 
