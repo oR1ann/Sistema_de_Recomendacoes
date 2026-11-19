@@ -3,6 +3,7 @@
 Execução local (na raiz do repositório):  streamlit run app/app.py
 """
 import html
+from pathlib import Path
 import re
 
 import streamlit as st
@@ -21,8 +22,17 @@ st.set_page_config(page_title="Cozinha Consciente", page_icon=":material/eco:", 
 st.html(CSS)
 
 
-@st.cache_resource(show_spinner="Carregando receitas...")
-def catalogo():
+def versao_dos_dados():
+    """Muda sempre que o código do recomendador ou os arquivos de dados mudam."""
+    pasta = Path(__file__).parent
+    arquivos = [pasta / "recomendador.py", *sorted((pasta / "dados").glob("*.parquet"))]
+    return tuple((a.name, a.stat().st_size, a.stat().st_mtime_ns) for a in arquivos)
+
+
+@st.cache_resource(show_spinner="Carregando receitas...", max_entries=1)
+def catalogo(versao):
+    # "versao" entra na chave do cache: após uma atualização no servidor, o catálogo é recarregado
+    # em vez de reaproveitar um objeto criado pela versão anterior do código
     return R.carregar()
 
 
@@ -97,7 +107,7 @@ def avaliacao_rapida(consulta):
                 st.caption("Não foi possível registrar agora. Tente pela aba Avaliar.")
 
 
-cat = catalogo()
+cat = catalogo(versao_dos_dados())
 
 st.html(
     '<div class="cc-hero"><div class="cc-eyebrow">Projeto Aplicado III · Mackenzie</div>'
