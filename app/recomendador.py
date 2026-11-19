@@ -62,7 +62,11 @@ def _regex(pats):
 @dataclass
 class Catalogo:
     receitas: pd.DataFrame
+    traducao_ing: dict = field(default_factory=dict)  # ingrediente em inglês -> português
     ingredientes: pd.DataFrame = field(init=False)   # uma linha por (receita, ingrediente)
+
+    def em_portugues(self, ingrediente: str) -> str:
+        return self.traducao_ing.get(ingrediente) or ingrediente
 
     def __post_init__(self):
         r = self.receitas
@@ -75,7 +79,17 @@ class Catalogo:
 
 
 def carregar(caminho=DADOS) -> Catalogo:
-    return Catalogo(pd.read_parquet(caminho))
+    """Carrega o catálogo e, se existirem, as traduções geradas por tools/traduzir_catalogo.py."""
+    receitas = pd.read_parquet(caminho)
+    receitas["nome_pt"] = None
+    trad_ing = {}
+    nomes, ingred = caminho.parent / "traducao_nomes.parquet", caminho.parent / "traducao_ingredientes.parquet"
+    if nomes.exists():
+        receitas["nome_pt"] = receitas["recipe_id"].map(pd.read_parquet(nomes).set_index("recipe_id")["nome_pt"])
+    if ingred.exists():
+        t = pd.read_parquet(ingred).dropna()
+        trad_ing = dict(zip(t["ingrediente"], t["ingrediente_pt"].str.lower()))
+    return Catalogo(receitas, trad_ing)
 
 
 def recomendar(cat: Catalogo, itens, considerar_basicos=True, restricoes=(), tempo_max=None,
@@ -154,6 +168,12 @@ def nome_bonito(nome: str) -> str:
     nome = re.sub(r"\s+", " ", str(nome)).strip()
     nome = re.sub(r"\b(\w+) s\b", r"\1's", nome)
     return nome[:1].upper() + nome[1:]
+
+
+def link_traduzido(nome: str, recipe_id: int) -> str:
+    """A mesma página do Food.com aberta pelo Google Tradutor, já em português."""
+    original = link_foodcom(nome, recipe_id).replace("https://www.food.com/", "")
+    return f"https://www-food-com.translate.goog/{original}?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=pt-BR"
 
 
 def link_foodcom(nome: str, recipe_id: int) -> str:
