@@ -3,6 +3,7 @@
 Execução local (na raiz do repositório):  streamlit run app/app.py
 """
 import html
+from pathlib import Path
 import re
 
 import streamlit as st
@@ -21,8 +22,17 @@ st.set_page_config(page_title="Cozinha Consciente", page_icon=":material/eco:", 
 st.html(CSS)
 
 
-@st.cache_resource(show_spinner="Carregando receitas...")
-def catalogo():
+def versao_dos_dados():
+    """Muda sempre que o código do recomendador ou os arquivos de dados mudam."""
+    pasta = Path(__file__).parent
+    arquivos = [pasta / "recomendador.py", *sorted((pasta / "dados").glob("*.parquet"))]
+    return tuple((a.name, a.stat().st_size, a.stat().st_mtime_ns) for a in arquivos)
+
+
+@st.cache_resource(show_spinner="Carregando receitas...", max_entries=1)
+def catalogo(versao):
+    # "versao" entra na chave do cache: após uma atualização no servidor, o catálogo é recarregado
+    # em vez de reaproveitar um objeto criado pela versão anterior do código
     return R.carregar()
 
 
@@ -55,13 +65,13 @@ def cartao(pos, idx, r, itens, basicos):
              ("Gordura", f"{r['total_fat_g']:.1f} g"), ("Gord. saturada", f"{r['saturated_fat_g']:.1f} g"),
              ("Açúcar", f"{r['sugar_g']:.1f} g"), ("Sódio", f"{r['sodium_mg']:.0f} mg")]
     nutri_html = "".join(f"<div>{k}<b>{v.replace('.', ',')}</b></div>" for k, v in nutri)
-    original = R.nome_bonito(r["name"])
-    nome = r["nome_pt"] if isinstance(r["nome_pt"], str) and r["nome_pt"] else original
+    nome = R.nome_bonito(r["name"])
     link_pt = R.link_traduzido(r["name"], r["recipe_id"])
     link_en = R.link_foodcom(r["name"], r["recipe_id"])
-    sub = (f'<div class="cc-orig">Nome original: {esc(original)} · '
-           f'<a href="{esc(link_en)}" target="_blank" rel="noopener">receita em inglês</a></div>'
-           if nome != original else "")
+    sub = (f'<div class="cc-desc">{esc(R.descricao(cat, idx))}</div>'
+           f'<div class="cc-orig">Modo de preparo: '
+           f'<a href="{esc(link_pt)}" target="_blank" rel="noopener">em português</a> · '
+           f'<a href="{esc(link_en)}" target="_blank" rel="noopener">original em inglês</a></div>')
     return (
         f'<div class="cc-card">'
         f'<div class="cc-top"><span class="cc-rank">{pos:02d}</span>'
@@ -97,7 +107,7 @@ def avaliacao_rapida(consulta):
                 st.caption("Não foi possível registrar agora. Tente pela aba Avaliar.")
 
 
-cat = catalogo()
+cat = catalogo(versao_dos_dados())
 
 st.html(
     '<div class="cc-hero"><div class="cc-eyebrow">Projeto Aplicado III · Mackenzie</div>'
@@ -212,9 +222,9 @@ with aba_como:
     )
     st.html('<div class="cc-aviso">O índice é uma aproximação para ordenar receitas, não uma avaliação '
             'nutricional. Ele não substitui a orientação de um profissional de saúde nem o Guia Alimentar para '
-            'a População Brasileira. As receitas vêm da base pública Food.com, escrita em inglês: os nomes e os '
-            'ingredientes foram traduzidos por tradução automática (o nome original aparece abaixo de cada '
-            'receita), e o link abre o modo de preparo traduzido pelo Google Tradutor, com a opção de ver o '
+            'a População Brasileira. As receitas vêm da base pública Food.com, escrita em inglês: o título é o '
+            'nome original, a descrição abaixo dele e os ingredientes estão em português (tradução automática '
+            'dos ingredientes), e o modo de preparo abre traduzido pelo Google Tradutor, com a opção de ver o '
             'original.</div>')
 
 # ------------------------------------------------------------------------ avaliar
