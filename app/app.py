@@ -65,13 +65,13 @@ def cartao(pos, idx, r, itens, basicos):
              ("Gordura", f"{r['total_fat_g']:.1f} g"), ("Gord. saturada", f"{r['saturated_fat_g']:.1f} g"),
              ("Açúcar", f"{r['sugar_g']:.1f} g"), ("Sódio", f"{r['sodium_mg']:.0f} mg")]
     nutri_html = "".join(f"<div>{k}<b>{v.replace('.', ',')}</b></div>" for k, v in nutri)
-    original = R.nome_bonito(r["name"])
-    nome = r["nome_pt"] if isinstance(r["nome_pt"], str) and r["nome_pt"] else original
+    nome = R.nome_bonito(r["name"])
     link_pt = R.link_traduzido(r["name"], r["recipe_id"])
     link_en = R.link_foodcom(r["name"], r["recipe_id"])
-    sub = (f'<div class="cc-orig">Nome original: {esc(original)} · '
-           f'<a href="{esc(link_en)}" target="_blank" rel="noopener">receita em inglês</a></div>'
-           if nome != original else "")
+    sub = (f'<div class="cc-desc">{esc(R.descricao(cat, idx))}</div>'
+           f'<div class="cc-orig">Modo de preparo: '
+           f'<a href="{esc(link_pt)}" target="_blank" rel="noopener">em português</a> · '
+           f'<a href="{esc(link_en)}" target="_blank" rel="noopener">original em inglês</a></div>')
     return (
         f'<div class="cc-card">'
         f'<div class="cc-top"><span class="cc-rank">{pos:02d}</span>'
@@ -222,9 +222,9 @@ with aba_como:
     )
     st.html('<div class="cc-aviso">O índice é uma aproximação para ordenar receitas, não uma avaliação '
             'nutricional. Ele não substitui a orientação de um profissional de saúde nem o Guia Alimentar para '
-            'a População Brasileira. As receitas vêm da base pública Food.com, escrita em inglês: os nomes e os '
-            'ingredientes foram traduzidos por tradução automática (o nome original aparece abaixo de cada '
-            'receita), e o link abre o modo de preparo traduzido pelo Google Tradutor, com a opção de ver o '
+            'a População Brasileira. As receitas vêm da base pública Food.com, escrita em inglês: o título é o '
+            'nome original, a descrição abaixo dele e os ingredientes estão em português (tradução automática '
+            'dos ingredientes), e o modo de preparo abre traduzido pelo Google Tradutor, com a opção de ver o '
             'original.</div>')
 
 # ------------------------------------------------------------------------ avaliar

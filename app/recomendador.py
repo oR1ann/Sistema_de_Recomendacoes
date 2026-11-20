@@ -79,13 +79,10 @@ class Catalogo:
 
 
 def carregar(caminho=DADOS) -> Catalogo:
-    """Carrega o catálogo e, se existirem, as traduções geradas por tools/traduzir_catalogo.py."""
+    """Carrega o catálogo e, se existir, a tradução dos ingredientes (tools/traduzir_catalogo.py)."""
     receitas = pd.read_parquet(caminho)
-    receitas["nome_pt"] = None
     trad_ing = {}
-    nomes, ingred = caminho.parent / "traducao_nomes.parquet", caminho.parent / "traducao_ingredientes.parquet"
-    if nomes.exists():
-        receitas["nome_pt"] = receitas["recipe_id"].map(pd.read_parquet(nomes).set_index("recipe_id")["nome_pt"])
+    ingred = caminho.parent / "traducao_ingredientes.parquet"
     if ingred.exists():
         t = pd.read_parquet(ingred).dropna()
         trad_ing = dict(zip(t["ingrediente"], t["ingrediente_pt"].str.lower()))
@@ -154,6 +151,33 @@ def detalhar(cat: Catalogo, receita_idx, itens, considerar_basicos=True):
         else:
             faltam.append(nome)
     return tem, basicos, faltam
+
+
+# categoria a partir dos marcadores do Food.com, da mais específica para a mais geral
+CATEGORIAS = [("desserts", "Sobremesa"), ("beverages", "Bebida"), ("soups-stews", "Sopa ou ensopado"),
+              ("salads", "Salada"), ("breads", "Pão"), ("sauces", "Molho"), ("condiments-etc", "Molho ou tempero"),
+              ("breakfast", "Café da manhã"), ("appetizers", "Entrada ou petisco"), ("snacks", "Lanche"),
+              ("side-dishes", "Acompanhamento"), ("main-dish", "Prato principal")]
+
+
+def descricao(cat: Catalogo, receita_idx, max_itens=4) -> str:
+    """Descrição em português montada só com dados da base: categoria + principais ingredientes.
+
+    Os nomes das receitas do Food.com são escritos livremente (siglas, apelidos) e a tradução
+    automática deles saía literal demais; a descrição usa os ingredientes, cuja tradução é confiável.
+    """
+    tags = cat.receitas.at[receita_idx, "tags_set"]
+    tipo = next((nome for tag, nome in CATEGORIAS if tag in tags), "Receita")
+    ing = cat.ingredientes.loc[[receita_idx]]
+    nomes = list(dict.fromkeys(cat.em_portugues(n) for n, b in zip(ing["ingrediente"], ing["basico"]) if not b))
+    if not nomes:
+        return tipo
+    resto = len(nomes) - max_itens
+    if resto > 0:
+        lista = ", ".join(nomes[:max_itens]) + f" e mais {resto} ingrediente{'s' if resto > 1 else ''}"
+    else:
+        lista = nomes[0] if len(nomes) == 1 else ", ".join(nomes[:-1]) + " e " + nomes[-1]
+    return f"{tipo} com {lista}"
 
 
 def semaforo(indice: float):

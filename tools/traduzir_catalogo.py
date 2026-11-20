@@ -1,12 +1,16 @@
-"""Traduz para português os nomes das receitas e os ingredientes do catálogo do site.
+"""Traduz para português os ingredientes do catálogo do site.
 
 Usa o modelo inglês→português do Argos Translate (código aberto, roda no computador), em lote.
 Cada texto vai em minúsculas e com ponto final, o que evita traduções degeneradas do modelo
-em títulos curtos. Traduções suspeitas (muito curtas ou repetitivas) são descartadas e o site
+em textos curtos. Traduções suspeitas (muito curtas ou repetitivas) são descartadas e o site
 mostra o original. A busca continua usando os ingredientes em inglês; a tradução é só exibição.
 
+Os nomes das receitas não são traduzidos: escritos livremente pelos usuários do Food.com (siglas,
+apelidos, frases soltas), saíam literais demais com este modelo e com o NLLB-200. O site mostra o
+nome original com uma descrição em português montada a partir da categoria e dos ingredientes.
+
 Uso:  python -m tools.traduzir_catalogo
-Saída: app/dados/traducao_nomes.parquet e app/dados/traducao_ingredientes.parquet
+Saída: app/dados/traducao_ingredientes.parquet
 """
 import pandas as pd
 
@@ -55,10 +59,6 @@ def em_blocos(textos, traduzir, nome, tamanho=2000):
 
 
 def main():
-    import sys
-    sys.path.insert(0, str(config.BASE_DIR / "app"))
-    import recomendador as R
-
     rec = pd.read_parquet(DADOS / "receitas.parquet")
     traduzir = tradutor()
 
@@ -67,15 +67,8 @@ def main():
     ti = pd.DataFrame({"ingrediente": ingred, "ingrediente_pt": ing_pt})
     ti.loc[[suspeita(a, b) for a, b in zip(ti["ingrediente"], ti["ingrediente_pt"])], "ingrediente_pt"] = None
 
-    nomes = [R.nome_bonito(n) for n in rec["name"]]
-    nomes_pt = em_blocos(nomes, traduzir, "nomes")
-    tn = pd.DataFrame({"recipe_id": rec["recipe_id"], "nome_pt": [n[:1].upper() + n[1:] for n in nomes_pt]})
-    tn.loc[[suspeita(a, b) for a, b in zip(nomes, tn["nome_pt"])], "nome_pt"] = None
-
     ti.to_parquet(DADOS / "traducao_ingredientes.parquet", index=False, compression="zstd")
-    tn.to_parquet(DADOS / "traducao_nomes.parquet", index=False, compression="zstd")
-    print(f"ingredientes traduzidos: {ti['ingrediente_pt'].notna().sum()}/{len(ti)}; "
-          f"nomes traduzidos: {tn['nome_pt'].notna().sum()}/{len(tn)}")
+    print(f"ingredientes traduzidos: {ti['ingrediente_pt'].notna().sum()}/{len(ti)}")
 
 
 if __name__ == "__main__":

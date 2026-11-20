@@ -112,6 +112,7 @@ header[data-testid="stHeader"], #MainMenu, footer, [data-testid="stToolbar"],
 .cc-title a {{ font-family: 'Fraunces', serif; font-size: 1.22rem; font-weight: 650; color: {P['texto']};
   text-decoration: none; line-height: 1.25; }}
 .cc-title a:hover {{ color: {P['verde']}; text-decoration: underline; text-underline-offset: 3px; }}
+.cc-desc {{ font-size: .95rem; color: {P['texto']}; margin-top: .25rem; line-height: 1.4; }}
 .cc-orig {{ font-size: .78rem; color: {P['suave']}; margin-top: .2rem; line-height: 1.35; }}
 .cc-title .cc-orig a {{ font-family: 'Inter', sans-serif; font-size: inherit; font-weight: 500;
   color: {P['verde']}; text-decoration: underline; text-underline-offset: 2px; }}
